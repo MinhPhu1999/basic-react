@@ -1,25 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useState, useRef} from 'react';
+import './App.css'
+import ColorBox from './Components/Box/index';
+import TodoList from './Components/TodoList/index';
+import TodoForm from './Components/TodoForm/index';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const [todoList, setTodoList] = useState([
+		{id: 1, title: 'Son Minh Phu'},
+		{id: 2, title: 'React Hook'},
+		{id: 3, title: 'useState()'}
+	]);
+
+	const len = useRef(todoList.length + 1);
+
+	function handleTodoClick(todo){
+		const index = todoList.findIndex(x => x.id === todo.id);
+
+		if(index < 0) return;
+
+		const newTodoList = [...todoList];
+		newTodoList.splice(index, 1);
+		setTodoList(newTodoList);
+	}
+
+	function handleTodoFormSubmit(formVales){
+		const newTodo = {
+			id: len.current,
+			...formVales
+		}
+		const newTodoList = [...todoList];
+		newTodoList.push(newTodo);
+		setTodoList(newTodoList);
+		len.current ++;
+	}
+
+	return (
+		<div className='app'>
+			<h1>React hooks - TodoList</h1>
+			<TodoForm onSubmit={handleTodoFormSubmit}/>
+			<TodoList 
+				todos={todoList}
+				onTodoClick={handleTodoClick}/>
+		</div>
+	);
 }
 
 export default App;
